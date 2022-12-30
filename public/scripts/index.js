@@ -147,15 +147,28 @@ $(function() {
   // CONTACT FORM
   $('#contact-form').submit(function(e) {
     e.preventDefault();
-
-      $.ajax({
-          url: "https://formspree.io/mvoaoabl",
-          method: "POST",
-          data: { message: $('form').serialize() },
-          dataType: "json"
-      }).done(function(response) {
-          $('#success').addClass('expand');
-          $('#contact-form').find("input[type=text], input[type=email], textarea").val("");
+    var name = $('#name-for-email').val();
+    var email = $('#email-address').val();
+    var message = $('#email-message').val();
+    
+    fetch('/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: email,
+        to: 'itsikh100@gmail.com',
+        subject: 'A message from ' + name + ' through my website',
+        body: message
+      })
+    })
+      .then(response => {
+        $('#success').addClass('expand');
+        $('#contact-form').find("input[type=text], input[type=email], textarea").val("");
+      })
+      .catch(error => {
+        console.log(error);
       });
   });
 
